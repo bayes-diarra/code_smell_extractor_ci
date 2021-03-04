@@ -16,6 +16,6 @@ Code smells extractor for projects on github using PMD.
 ## Système d'exploitation 
  - Linux 
 ## To run the program
-You must be on linux and you must modify the variables in src / main / java / utilities / Utility.java:
+You must modify the variables in src / main / java / utilities / Utility.java:
 - PATH_PMD = "[your path] / pmd / bin /", the directory where you installed PMD.
 - PATH_REPOSITORY = "[your path] / gitRepository /", the directory in which the commits will be temporarily saved to perform the analysis.
