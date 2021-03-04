@@ -2,8 +2,8 @@
 Code smells extractor for projects on github
 
 ## Installations to do
-Git : https://git-scm.com/downloads
-PMD : https://pmd.github.io/
+- Git : https://git-scm.com/downloads
+- PMD : https://pmd.github.io/
 
 ## Système d'exploitation 
  - Linux 
