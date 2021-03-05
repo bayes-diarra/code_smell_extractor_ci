@@ -18,6 +18,7 @@ public class Utility {
     public static final String PATH_REPOSITORY = "/home/bayesdiarra/gitRepository/";
 
 
+
     /**
      * Permit to write in CSV file.
      * @param sb

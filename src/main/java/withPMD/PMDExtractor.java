@@ -16,7 +16,7 @@ public class PMDExtractor extends Thread{
 
     String project;
     List<Build> project_builds;
-    public StringBuilder codeSmells = new StringBuilder("buildID,build_Failed,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,ExcessiveParameterList,DataClass\n");
+    public StringBuilder codeSmells = new StringBuilder("buildID,build_Failed,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass\n");
     
 
     ArrayList<Report> list = new ArrayList<>();
@@ -24,11 +24,6 @@ public class PMDExtractor extends Thread{
         this.project = projectName;
         this.project_builds = project_builds;
     }
-
-    public StringBuilder getCodeSmells() {
-        return codeSmells;
-    }
-
 
     @Override
     public void run() {
@@ -103,10 +98,11 @@ public class PMDExtractor extends Thread{
          */
         ProcessBuilder builder = new ProcessBuilder("bash", "-c",
                 "cd " + Utility.PATH_PMD + " && " + " ./run.sh pmd -dir " + dir + " -f csv -R "
-                        + "category/java/design.xml/GodClass" + ",category/java/design.xml/NPathComplexity"
+                        + "category/java/design.xml/GodClass" 
+                        + ",category/java/design.xml/NPathComplexity"
                         + ",category/java/design.xml/CyclomaticComplexity"
                         + ",category/java/design.xml/DataClass"
-                 + ",category/java/design.xml/ExcessiveParameterList"
+                // + ",category/java/design.xml/ExcessiveParameterList"
                  +" -language java"
         );
 
@@ -140,14 +136,11 @@ public class PMDExtractor extends Thread{
             if (details[details.length-1].toString().contains("DataClass")) {
                 report.setDataClass(report.getDataClass() + 1);
             }
-            if (details[details.length-1].toString().contains("ExcessiveParameterList")) {
-                report.setExcessiveParameterList(report.getExcessiveParameterList() + 1);
-            }
             report.setDuplicatedCode(duplicatedCode(dir,buildID,build_failed));            
         }
         report.setDuplicatedCode(duplicatedCode(dir, buildID, build_failed));
         codeSmells.append(report.getBuildID() + "," +  report.getBuild_Failed() + "," + report.getDuplicatedCode() + ","+ report.getGodClass()+
-                        ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() + ","+report.getExcessiveParameterList()+","+ report.getDataClass()+ '\n');
+                        ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() +","+ report.getDataClass()+ '\n');
         
 
         // delete extracted version

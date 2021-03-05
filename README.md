@@ -10,7 +10,6 @@ Code smells extractor for projects on github using PMD.
 - GodClass
 - GodMethod 
 - CyclomaticComplexity 
-- ExcessiveParameterList 
 - DataClass
 
 ## Système d'exploitation 

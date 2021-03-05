@@ -12,7 +12,7 @@ import java.util.List;
 public class PMDMain {
 
     
-    static String PROJECT_NAME = "perfectsense/brightspot-cms";
+    static String PROJECT_NAME = "HubSpot/Singularity";
     static String DATA = "data.csv";
 
     public static void main(String[] args) throws IOException {

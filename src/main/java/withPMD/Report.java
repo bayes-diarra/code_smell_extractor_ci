@@ -4,7 +4,7 @@ public class Report {
 
     private String buildID;
     private int build_Failed;
-    private int duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,excessiveParameterList,DataClass;
+    private int duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass;
     private  static int NUMBER=1;
 
     public Report(String buildID, int build_Failed) {
@@ -14,7 +14,6 @@ public class Report {
         this.GodClass = 0;
         this.GodMethod = 0;
         this.CyclomaticComplexity = 0;
-        this.excessiveParameterList=0;
         this.DataClass = 0;
         Report.NUMBER++;
     }
@@ -37,14 +36,6 @@ public class Report {
 
     public void setBuild_Failed(int build_Failed) {
         this.build_Failed = build_Failed;
-    }
-
-    public int getExcessiveParameterList() {
-        return excessiveParameterList;
-    }
-
-    public void setExcessiveParameterList(int excessiveParameterList) {
-        this.excessiveParameterList = excessiveParameterList;
     }
 
     public int getGodClass() {
