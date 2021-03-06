@@ -38,7 +38,6 @@ public class PMDMain {
             }
         }
         hashmap_build.put(PROJECT_NAME, builds_project);
-        //}
         // start the Code Smells detection using PMD
         for (String proj : hashmap_build.keySet()) {
             PMDExtractor pmd = new PMDExtractor(proj, hashmap_build.get(proj));

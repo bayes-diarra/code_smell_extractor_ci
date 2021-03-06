@@ -8,18 +8,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PMDExtractor extends Thread{
 
-    String project;
-    List<Build> project_builds;
+    private String project;
+    private List<Build> project_builds;
     public StringBuilder codeSmells = new StringBuilder("buildID,build_Failed,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass\n");
     
 
-    ArrayList<Report> list = new ArrayList<>();
     public PMDExtractor(String projectName, List<Build> project_builds) {
         this.project = projectName;
         this.project_builds = project_builds;
@@ -98,12 +96,11 @@ public class PMDExtractor extends Thread{
          */
         ProcessBuilder builder = new ProcessBuilder("bash", "-c",
                 "cd " + Utility.PATH_PMD + " && " + " ./run.sh pmd -dir " + dir + " -f csv -R "
-                        + "category/java/design.xml/GodClass" 
-                        + ",category/java/design.xml/NPathComplexity"
-                        + ",category/java/design.xml/CyclomaticComplexity"
-                        + ",category/java/design.xml/DataClass"
-                // + ",category/java/design.xml/ExcessiveParameterList"
-                 +" -language java"
+                + "category/java/design.xml/GodClass" 
+                + ",category/java/design.xml/NPathComplexity"
+                + ",category/java/design.xml/CyclomaticComplexity"
+                + ",category/java/design.xml/DataClass"
+                +" -language java"
         );
 
         builder.redirectErrorStream(true);
@@ -151,8 +148,6 @@ public class PMDExtractor extends Thread{
         }
         return codeSmells;
     }
-
-  //  "buildID,build_Failed,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass\n"
 
     private int duplicatedCode(String dir, String buildID, int build_failed) throws IOException {
 
