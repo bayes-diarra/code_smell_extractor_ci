@@ -13,7 +13,7 @@ public class Linux extends Environment {
 
     @Override
     public String executeCPD() {
-        return " ./rush cpd ";
+        return " ./run.sh cpd ";
     }
 
     @Override
