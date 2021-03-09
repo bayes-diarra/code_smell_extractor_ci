@@ -37,22 +37,21 @@ public class PMDMain {
 
 
         if (args.length == 3) {
-            String pmdPath = args[0];
-            String system = args[1];
-            String inputfile = args[2];
+            String system = args[0];
+            String inputfile = args[1];
 
             try {
-                if ((system.equals("-l")) && (inputfile.contains(".csv")) && !pmdPath.equals(null) ) {
+                if ((system.equals("-l")) && (inputfile.contains(".csv"))) {
                      
-                    env = new Linux(pmdPath, "$HOME/tmpGitRepository" ); 
+                    env = new Linux("/$HOME/pmd/bin", "$HOME/tmpGitRepository" ); 
                     hashmap_build = Utility.getBuilds(inputfile);
                     for (String proj : hashmap_build.keySet()) {
                         PMDExtractor pmd = new PMDExtractor(proj, hashmap_build.get(proj), env);
                         pmd.start();
                     }
 
-                } else if ((system.equals("-w")) && (inputfile.contains(".csv")) && !pmdPath.equals(null) ) {
-                    env = new Windows(pmdPath, "C:/tmpGitRepository" ); 
+                } else if ((system.equals("-w")) && (inputfile.contains(".csv"))) {
+                    env = new Windows("C:/pmd/bin", "C:/tmpGitRepository" ); 
                     hashmap_build = Utility.getBuilds(inputfile);
                     for (String proj : hashmap_build.keySet()) {
                         PMDExtractor pmd = new PMDExtractor(proj, hashmap_build.get(proj), env);
