@@ -32,13 +32,12 @@ public class PMDExtractor extends Thread{
                 System.out.println(Report.getNumber()+": "+project+" ********** BUILD (" + build.buildId + ")");
                 extractCS(build);
             }
-            Utility.writeInCSV(codeSmells, project.replaceAll("/", "-") + "_data.csv");
+            Utility.writeInCSV(codeSmells,"outputData.csv");
             // delete the project directory
             try {
-                FileUtils.deleteDirectory(new File(Utility.PATH_REPOSITORY + project));
+                FileUtils.deleteDirectory(new File(Utility.PATH_REPOSITORY));
             } catch (final IOException e) {
                 System.err.println("Please delete the directory " + Utility.PATH_REPOSITORY + project + " manually");
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,8 +61,8 @@ public class PMDExtractor extends Thread{
          * command. You should also download PMD and set the path of the bin folder (
          * PMD_DIR in Utils.java)
          */
-        ProcessBuilder builder = new ProcessBuilder("bash", "-c",
-                "cd " + local_dir + " && " + "git worktree add " + code_version + " " + commit);
+        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c",
+                "cd " + local_dir + " ; " + "git worktree add " + code_version + " " + commit);
 
         builder.redirectErrorStream(true);
         Process p = builder.start();
@@ -78,7 +77,7 @@ public class PMDExtractor extends Thread{
         if (new File(code_version).exists()) {
             // detect code smells
             codeSmells.append(
-                    runPMD(code_version + "/ ", build.buildId, build.build_failed, project).toString());
+                    runPMD(code_version + "/", build.buildId, build.build_failed, project).toString());
         } else
             System.out.println("VERSION PROBLEM" + Arrays.toString(builder.command().toArray()));
 
@@ -94,8 +93,7 @@ public class PMDExtractor extends Thread{
          *
          * List of used CS:
          */
-        ProcessBuilder builder = new ProcessBuilder("bash", "-c",
-                "cd " + Utility.PATH_PMD + " && " + " ./run.sh pmd -dir " + dir + " -f csv -R "
+        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c", " pmd -dir " + dir + " -f csv -R "
                 + "category/java/design.xml/GodClass" 
                 + ",category/java/design.xml/NPathComplexity"
                 + ",category/java/design.xml/CyclomaticComplexity"
@@ -151,8 +149,7 @@ public class PMDExtractor extends Thread{
 
     private int duplicatedCode(String dir, String buildID, int build_failed) throws IOException {
 
-        ProcessBuilder builder = new ProcessBuilder("bash", "-c", "cd "+ Utility.PATH_PMD
-                + " && ./run.sh cpd --minimum-tokens 100 --files " + dir + " --format xml");
+        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c", "cd " + Utility.PATH_PMD + " ; .\\cpd.bat --minimum-tokens 100 --files " + dir + " --format xml");
         // System.out.println( Arrays.toString(builder.command().toArray()));
         builder.redirectErrorStream(true);
         Process p = builder.start();
@@ -171,6 +168,7 @@ public class PMDExtractor extends Thread{
 
         return nbr;
     }
+    
 
 
 }

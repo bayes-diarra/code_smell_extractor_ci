@@ -12,7 +12,7 @@ import java.util.List;
 public class PMDMain {
 
     
-    static String PROJECT_NAME = "HubSpot/Singularity";
+    static String PROJECT_NAME = null;
     static String DATA = "data.csv";
 
     public static void main(String[] args) throws IOException {
@@ -29,14 +29,18 @@ public class PMDMain {
         //  Data Extraction
         List<Build> builds_project = new ArrayList<>();
         for (String row : allbuiltCommits) {
-            String[] infos = row.split(Utility.CSV_DELIMTER);
-            if (infos[0].contains(PROJECT_NAME)) {
-                int buildRes = infos[2].equalsIgnoreCase("false") ? 1 : 0;
-                builds_project.add(new Build(infos[1], // build ID
-                        buildRes, Arrays.asList(infos[3].split(Utility.TABLE_DELIMTER))// commits
-                ));
+            if (row!= null){
+                String[] infos = row.split(Utility.CSV_DELIMTER);
+                if( infos[2].equalsIgnoreCase("false") || infos[2].equalsIgnoreCase("true")) {
+                    PROJECT_NAME=infos[0];
+                    int buildRes = infos[2].equalsIgnoreCase("false") ? 1 : 0;
+                    builds_project.add(new Build(infos[1], // build ID
+                            buildRes, Arrays.asList(infos[3].split(Utility.TABLE_DELIMTER))// commits
+                    ));
+                }
             }
         }
+        
         hashmap_build.put(PROJECT_NAME, builds_project);
         // start the Code Smells detection using PMD
         for (String proj : hashmap_build.keySet()) {

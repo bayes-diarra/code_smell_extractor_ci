@@ -14,8 +14,8 @@ public class Utility {
     public static final String CSV_DELIMTER = ",";
     public static final String TABLE_DELIMTER = "#";
     // If your are using linux environment
-    public static final String PATH_PMD = "$HOME/pmd/bin/";
-    public static final String PATH_REPOSITORY = "/home/bayesdiarra/gitRepository/";
+    public static  String PATH_PMD = "C:/pmd/bin/";
+    public static  String PATH_REPOSITORY = "C:/gitRepository/";
 
 
 
@@ -28,7 +28,7 @@ public class Utility {
 
         if (new File(file).exists()) {
             System.out.println(file + " the file already exists!");
-            System.out.println("If you forgot to delete it, you can copy form console:\n"+sb.toString());
+            System.out.println("If you forgot to delete it, you can copy it form console:\n"+sb.toString());
         } else {
             try {
                 final PrintWriter writer = new PrintWriter(new File(file));
@@ -54,8 +54,10 @@ public class Utility {
                 try {
                     Git.cloneRepository().setBranch("master").setDirectory(f).setURI("https://github.com/" + project)
                             .call();
+                            System.out.println("Repository cloned!");
                 } catch (org.eclipse.jgit.dircache.InvalidPathException e) {
                     e.printStackTrace();
+                    System.out.println("Error in cloning repository!");
                 }
             }
         } catch (GitAPIException e) {
