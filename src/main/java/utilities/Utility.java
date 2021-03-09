@@ -4,20 +4,18 @@ package utilities;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import withPMD.Build;
+
 import java.io.*;
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Utility {
 
     public static final String CSV_DELIMTER = ",";
     public static final String TABLE_DELIMTER = "#";
-    // If your are using linux environment
-    public static final String PATH_PMD = "$HOME/pmd/bin/";
-    public static final String PATH_REPOSITORY = "/home/bayesdiarra/gitRepository/";
-
-
 
     /**
      * Permit to write in CSV file.
@@ -28,7 +26,7 @@ public class Utility {
 
         if (new File(file).exists()) {
             System.out.println(file + " the file already exists!");
-            System.out.println("If you forgot to delete it, you can copy form console:\n"+sb.toString());
+            System.out.println("If you forgot to delete it, you can copy it form console:\n"+sb.toString());
         } else {
             try {
                 final PrintWriter writer = new PrintWriter(new File(file));
@@ -46,16 +44,18 @@ public class Utility {
      * Permit to clone project from git.
      * @param project
      */
-    public static void cloneProject(String project) {
+    public static void cloneProject(String project, String repoPath) {
         try {
-            File f = new File(PATH_REPOSITORY + project);
+            File f = new File(repoPath + project);
             if (!f.exists()) {
                 System.out.println("cloning " + project + " project..");
                 try {
                     Git.cloneRepository().setBranch("master").setDirectory(f).setURI("https://github.com/" + project)
                             .call();
+                            System.out.println("Repository cloned!");
                 } catch (org.eclipse.jgit.dircache.InvalidPathException e) {
                     e.printStackTrace();
+                    System.out.println("Error in cloning repository!");
                 }
             }
         } catch (GitAPIException e) {
@@ -79,5 +79,48 @@ public class Utility {
             res.add(line);
         }
         return res;
+    }
+
+    public static HashMap<String, List<Build>> getBuilds(String data){
+        ///////////////////////////////// load build information://////////////////////////////////////////////
+        /*
+         * the csv file contains data from a project on github: gh_project_name:project name, tr_build_id:
+         * build ID, build_successful: Build result (TRUE=passed, FALSE=failed),
+         * git_all_built_commits: list of built commits separated by #
+         */
+        List<String> allbuiltCommits;
+        HashMap<String, List<Build>> hashmap_build = new HashMap<>();// create a hashmap
+        try {
+            allbuiltCommits = Utility.readCSVData(data);
+       // the data of all the studied projects
+
+        
+            String project_name ="";
+            //  Data Extraction
+            List<Build> builds_project = new ArrayList<>();
+            for (String row : allbuiltCommits) {
+                if (row!= null){
+                    String[] infos = row.split(Utility.CSV_DELIMTER);
+                    if(infos.length>=4){
+                        if( infos[2].equalsIgnoreCase("false") || infos[2].equalsIgnoreCase("true")) {
+                            project_name=infos[0];
+                            int buildRes = infos[2].equalsIgnoreCase("false") ? 1 : 0;
+                            builds_project.add(new Build(infos[1], // build ID
+                                    buildRes, Arrays.asList(infos[3].split(Utility.TABLE_DELIMTER))// commits
+                            ));
+                        }
+                    }
+                }
+            }
+
+
+            hashmap_build.put(project_name, builds_project);
+            
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Enable to read " + data);
+        }
+        return hashmap_build;
     }
 }
