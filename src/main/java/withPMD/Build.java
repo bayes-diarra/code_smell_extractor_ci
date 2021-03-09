@@ -1,7 +1,8 @@
 package withPMD;
-
 import java.util.Arrays;
 import java.util.List;
+
+
 
 public class Build{
 	
@@ -41,6 +42,8 @@ public class Build{
 	public String toString() {
 		return "Build [buildId=" + buildId + ", commits=" + Arrays.toString(commits.toArray()) + ", build_failed=" + build_failed + "]";
 	}
+	
+
 	
 	
 }
