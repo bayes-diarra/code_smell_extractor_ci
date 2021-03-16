@@ -37,7 +37,6 @@ public class Utility {
                 e.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -50,8 +49,11 @@ public class Utility {
             if (!f.exists()) {
                 System.out.println("cloning " + project + " project..");
                 try {
-                    Git.cloneRepository().setBranch("master").setDirectory(f).setURI("https://github.com/" + project)
-                            .call();
+                    Git.cloneRepository()
+                    .setBranch("master")
+                    .setDirectory(f)
+                    .setURI("https://github.com/" + project)
+                    .call();
                             System.out.println("Repository cloned!");
                 } catch (org.eclipse.jgit.dircache.InvalidPathException e) {
                     e.printStackTrace();
@@ -104,8 +106,8 @@ public class Utility {
                     if(infos.length>=4){
                         if( infos[2].equalsIgnoreCase("false") || infos[2].equalsIgnoreCase("true")) {
                             project_name=infos[0];
-                            int buildRes = infos[2].equalsIgnoreCase("false") ? 1 : 0;
-                            builds_project.add(new Build(infos[1], // build ID
+                            int buildRes = infos[2].equalsIgnoreCase("true") ? 1 : 0;
+                            builds_project.add(new Build(infos[0], infos[1], // project name and build ID
                                     buildRes, Arrays.asList(infos[3].split(Utility.TABLE_DELIMTER))// commits
                             ));
                         }

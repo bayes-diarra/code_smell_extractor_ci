@@ -1,22 +1,33 @@
 package withPMD;
 
 public class Report {
-
+    private String project_name; 
     private String buildID;
-    private int build_Failed;
-    private int duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass;
+    private int build_state;
+    private int duplicatedCode,godClass,godMethod,cyclomaticComplexity,dataClass,fileNumber;
     private  static int NUMBER=1;
 
-    public Report(String buildID, int build_Failed) {
+    public Report(String project_name, String buildID, int build_state) {
+        this.project_name = project_name;
         this.buildID = buildID;
-        this.build_Failed = build_Failed;
+        this.build_state = build_state;
         this.duplicatedCode = 0;
-        this.GodClass = 0;
-        this.GodMethod = 0;
-        this.CyclomaticComplexity = 0;
-        this.DataClass = 0;
+        this.godClass = 0;
+        this.godMethod = 0;
+        this.cyclomaticComplexity = 0;
+        this.dataClass = 0;
+        this.fileNumber =0;
         Report.NUMBER++;
     }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
+    }
+
 
     public static int getNumber(){
         return NUMBER;
@@ -30,36 +41,36 @@ public class Report {
         this.buildID = buildID;
     }
 
-    public int getBuild_Failed() {
-        return build_Failed;
+    public int getBuild_State() {
+        return build_state;
     }
 
-    public void setBuild_Failed(int build_Failed) {
-        this.build_Failed = build_Failed;
+    public void setBuild_State(int build_state) {
+        this.build_state = build_state;
     }
 
     public int getGodClass() {
-        return GodClass;
+        return godClass;
     }
 
     public void setGodClass(int godClass) {
-        GodClass = godClass;
+        this.godClass = godClass;
     }
 
     public int getGodMethod() {
-        return GodMethod;
+        return godMethod;
     }
 
     public void setGodMethod(int godMethod) {
-        GodMethod = godMethod;
+        this.godMethod = godMethod;
     }
 
     public int getCyclomaticComplexity() {
-        return CyclomaticComplexity;
+        return this.cyclomaticComplexity;
     }
 
     public void setCyclomaticComplexity(int cyclomaticComplexity) {
-        CyclomaticComplexity = cyclomaticComplexity;
+        this.cyclomaticComplexity = cyclomaticComplexity;
     }
 
     public int getDuplicatedCode() {
@@ -71,10 +82,23 @@ public class Report {
     }
 
     public int getDataClass() {
-        return DataClass;
+        return this.dataClass;
     }
 
     public void setDataClass(int dataClass) {
-        DataClass = dataClass;
+        this.dataClass = dataClass;
     }
+
+    public int getFileNumber() {
+        return fileNumber;
+    }
+    public void setFileNumber(int fileNumber) {
+        this.fileNumber = fileNumber;
+    }
+
+    @Override
+	public String toString() {
+		return "buildId=" + this.buildID + ", Build state=  "+this.build_state + ", CyclomaticComplexity = " + this.cyclomaticComplexity + "\n"+ 
+        ", dataClass = "+this.dataClass + ", godClass = " +this.godClass+ ", duplicatedCode="+this.duplicatedCode+ ", godMethod = "+ this.godMethod+", FileNumber=" +this.fileNumber;
+	}
 }

@@ -10,6 +10,7 @@ public abstract class Environment {
         this.repositoryPath = repositoryPath;
     }
 
+
     public String getPmdPath() {
         return pmdPath;
     }
