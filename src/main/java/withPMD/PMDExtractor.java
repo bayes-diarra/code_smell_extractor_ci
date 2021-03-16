@@ -11,15 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class PMDExtractor extends Thread{
 
     private String project;
     private List<Build> project_builds;
-    private StringBuilder codeSmells = new StringBuilder("buildID,build_Failed,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass\n");
+    private StringBuilder codeSmells = new StringBuilder("project_name,buildID,build_State,duplicatedCode,GodClass,GodMethod,CyclomaticComplexity,DataClass,File_Modified\n");
     private Environment env;
 
     public PMDExtractor(String projectName, List<Build> project_builds, Environment env) {
@@ -36,7 +36,7 @@ public class PMDExtractor extends Thread{
             System.out.println(LocalTime.now());
             Utility.cloneProject( project, env.getRepositoryPath());//clone GIT
             for (Build build : project_builds) {
-                System.out.println(Report.getNumber()+": "+project+" ********** BUILD (" + build.buildId + ")");
+                System.out.println(Report.getNumber()+": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 extractCS(build);
             }
             Utility.writeInCSV(codeSmells,"outputData.csv");
@@ -44,7 +44,7 @@ public class PMDExtractor extends Thread{
             System.out.println(LocalTime.now());
             // delete the project directory
             try {
-                FileUtils.deleteDirectory(new File(env.getRepositoryPath() ));
+                FileUtils.deleteDirectory(new File(env.getRepositoryPath()));
             } catch (final IOException e) {
                 System.err.println("Please delete the directory " + env.getRepositoryPath() + project + " manually");
             }
@@ -57,53 +57,68 @@ public class PMDExtractor extends Thread{
      * we use Command line to run PMD
      */
     public void extractCS(Build build) throws IOException {
-        String local_dir = env.getRepositoryPath() + project;
-        String commit = build.commits.get(build.getNbrCommits() - 1);// extract code version at the time of the last
-        // built commit
-        String code_version = local_dir + "/versions_builds/" + build.buildId;
+        String projectPath = env.getRepositoryPath() + project;
+        String commit = build.getCommits().get(build.getNbrCommits() - 1);// extract code version at the time of the last
+        
+        ArrayList<String> list = getFilesChanged(commit, projectPath);
+        
+        try {
+            Report report = new Report(build.getProject_name(), build.getBuildId(), build.getBuild_State());
+            report.setFileNumber(list.size());
+            for (String item : list) {
+                report = runPMD(projectPath, report, item);
+                report.setDataClass(duplicatedCode(projectPath, item));
+            }
+                
+            codeSmells.append(report.getProject_name() + "," + report.getBuildID() + "," +  report.getBuild_State() + "," + report.getDuplicatedCode() + ","+ report.getGodClass()+
+            ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() +","+ report.getDataClass()+ ","+ report.getFileNumber() + '\n');
+            System.out.println(" **** File Number : "+report.getFileNumber()+" ****");
+        } catch (Exception e) {
+            
+        }
+            
+        
 
-        new File(local_dir + "/versions_builds/").mkdir();
-        new File(code_version).mkdir();
-        /*
-         * use git worktree to extract the code version at the time of a commit using
-         * the command line PS. you should install "git" on your machine to run the
-         * command. You should also download PMD and set the path of the bin folder (
-         * PMD_DIR in Utils.java)
-         */
-        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(),
-                "cd " + local_dir + " ; " + "git worktree add " + code_version + " " + commit);
+      
+    }
 
+
+    private ArrayList<String> getFilesChanged(String commit, String projectPath) throws IOException{
+
+        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(), "cd " + projectPath + 
+        " ;  git show --pretty='' --name-only "+ commit);
+        
         builder.redirectErrorStream(true);
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line2;
-        while ((line2 = r.readLine()) != null) {
-            if (line2.contains("fatal")) {
+        String line;
+        ArrayList<String> list = new ArrayList<>();
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                break;
+            }
+            if (line.contains(".java")) { // header : lines,tokens,occurrences
+                list.add(line);
+            }
+            if (line.contains("fatal")) {
                 System.out.println(project+": "+ Arrays.toString(builder.command().toArray()));
-                System.out.println(project+" ********** ERROR IN COMMIT " + commit + ":\n" + line2);
+                System.out.println(project+" ********** ERROR IN COMMIT " + commit + ":\n" + line);
+                return null;
             }
         }
-        if (new File(code_version).exists()) {
-            // detect code smells
-            codeSmells.append(
-                    executePMDCPD(code_version + "/", build.buildId, build.build_failed, project).toString());
-        } else
-            System.out.println("VERSION PROBLEM" + Arrays.toString(builder.command().toArray()));
-
-        // delete the version
-        try {
-            FileUtils.deleteDirectory(new File(code_version));
-        } catch (final IOException e) {
-        }
+        return list;
     }
 
-    private Report runPMD(String dir, String buildID, int build_failed, String project) throws IOException {
+
+
+    private Report runPMD(String projectPath, Report report, String filePath) throws IOException {
         /*
          *
          * List of used CS:
          */
         ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(),"cd "+ env.getPmdPath()+ 
-        " ; " + env.executePMD() + dir + " -f csv -R "
+        " ; " + env.executePMD() + projectPath+"/"+filePath + " -f csv -R "
                 + "category/java/design.xml/GodClass" 
                 + ",category/java/design.xml/NPathComplexity"
                 + ",category/java/design.xml/CyclomaticComplexity"
@@ -116,7 +131,6 @@ public class PMDExtractor extends Thread{
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
         String[] details = null;
-        Report report = new Report(buildID, build_failed);
         while (true) {
             line = r.readLine();
             if (line == null) {
@@ -127,7 +141,7 @@ public class PMDExtractor extends Thread{
             details = line.split(",");
              // header : "Problem","Package","File","Priority","Line","Description","Rule set","Rule"
 
-
+            
             if (details[details.length-1].toString().contains("GodClass")) {
                 report.setGodClass(report.getGodClass() + 1);
             }
@@ -147,11 +161,11 @@ public class PMDExtractor extends Thread{
         return report;
     }
 
-    private int duplicatedCode(String dir, String buildID, int build_failed, String project) throws IOException {
+    private int duplicatedCode(String projectPath, String filePath) throws IOException {
 
         ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(),"cd "+ env.getPmdPath()+ 
-        " ; " + env.executeCPD() + " --minimum-tokens 100 --files " + dir + " --format xml");
-        // System.out.println( Arrays.toString(builder.command().toArray()));
+        " ; " + env.executeCPD() + " --minimum-tokens 100 --files " + projectPath+"/"+filePath + " --format xml");
+
         builder.redirectErrorStream(true);
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -169,27 +183,6 @@ public class PMDExtractor extends Thread{
 
         return nbr;
     }
-
-    private StringBuilder executePMDCPD(String dir, String buildID, int build_failed, String project) throws IOException {
-
-        int nbr = duplicatedCode(dir, buildID, build_failed, project);
-        Report report  = runPMD(dir, buildID, build_failed, project);
-        StringBuilder codesmells = new StringBuilder("");
-        codeSmells.append(report.getBuildID() + "," +  report.getBuild_Failed() + "," + nbr + ","+ report.getGodClass()+
-        ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() +","+ report.getDataClass()+ '\n');
-        // delete extracted version
-        try {
-            FileUtils.deleteDirectory(new File(env.getRepositoryPath()+ project + "/version"));
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        return codesmells;
-    }
-    
-
-    
-
-
 
 
 }
