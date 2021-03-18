@@ -1,8 +1,0 @@
-withPMD\Report.class
-withPMD\PMDExtractor.class
-withPMD\Build.class
-withPMD\PMDMain.class
-environments\Environment.class
-environments\Linux.class
-environments\Windows.class
-utilities\Utility.class

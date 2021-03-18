@@ -65,11 +65,11 @@ public class TSDetectExtractor extends Thread {
             System.out.println(LocalTime.now());
         
             // delete the project directory
-            //try {
-            //    FileUtils.deleteDirectory(new File(env.getRepositoryPath()));
-            //} catch (final IOException e) {
-            //    System.err.println("Please delete the directory " + env.getRepositoryPath() + project + " manually");
-            //}
+            try {
+                FileUtils.deleteDirectory(new File(env.getRepositoryPath()));
+            } catch (final IOException e) {
+                System.err.println("Please delete the directory " + env.getRepositoryPath() + project + " manually");
+            }
         
         } catch (Exception e) {
             e.printStackTrace();
