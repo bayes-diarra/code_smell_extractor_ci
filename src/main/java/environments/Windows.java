@@ -6,6 +6,10 @@ public class Windows  extends Environment {
         super(pmdPath, repositoryPath);
     }
 
+    public Windows (String repositoryPath) {
+        super(repositoryPath);
+    }
+
     @Override
     public String executePMD() {
         return " .\\pmd.bat -d ";

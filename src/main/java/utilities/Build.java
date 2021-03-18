@@ -1,4 +1,4 @@
-package withPMD;
+package utilities;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +17,7 @@ public class Build{
 		this.commits = commits;
 		this.build_State = build_State;
 	}
+	
 	
 	public String getProject_name() {
 		return project_name;
