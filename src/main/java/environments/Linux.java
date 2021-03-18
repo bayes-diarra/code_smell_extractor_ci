@@ -6,6 +6,10 @@ public class Linux extends Environment {
         super(pmdPath, repositoryPath);
     }
 
+    public Linux(String repositoryPath) {
+        super(repositoryPath);
+    }
+
     @Override
     public String executePMD() {
         return " ./run.sh pmd -d ";

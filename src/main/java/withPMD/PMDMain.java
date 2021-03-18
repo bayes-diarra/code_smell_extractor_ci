@@ -2,9 +2,8 @@ package withPMD;
 
 
 import utilities.Utility;
-
+import utilities.Build;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class PMDMain {
 
     public static void main(String[] args) throws IOException {
         
-        String data = "singularity.csv"; //jackrabbit-oak
+        String data = "data.csv"; //jackrabbit-oak
         HashMap<String, List<Build>> hashmap_build=null;
         Environment env = null;
         /*ArrayList<String> projects_list= new ArrayList<>();

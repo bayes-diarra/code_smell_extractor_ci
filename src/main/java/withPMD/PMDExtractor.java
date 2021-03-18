@@ -1,7 +1,7 @@
 package withPMD;
 
 import utilities.Utility;
-
+import utilities.Build;
 import org.apache.commons.io.FileUtils;
 
 import environments.Environment;
@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PMDExtractor extends Thread{
 
@@ -39,7 +40,10 @@ public class PMDExtractor extends Thread{
                 System.out.println(Report.getNumber()+": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 extractCS(build);
             }
-            Utility.writeInCSV(codeSmells,"outputData.csv");
+            
+            int aleatoire = ThreadLocalRandom.current().nextInt();
+
+            Utility.writeInCSV(codeSmells, project.replace("/", "-")+"_PMDoutputData"+aleatoire+".csv");
             
             System.out.println(LocalTime.now());
             // delete the project directory
@@ -59,27 +63,50 @@ public class PMDExtractor extends Thread{
     public void extractCS(Build build) throws IOException {
         String projectPath = env.getRepositoryPath() + project;
         String commit = build.getCommits().get(build.getNbrCommits() - 1);// extract code version at the time of the last
-        
-        ArrayList<String> list = getFilesChanged(commit, projectPath);
-        
-        try {
-            Report report = new Report(build.getProject_name(), build.getBuildId(), build.getBuild_State());
-            report.setFileNumber(list.size());
-            for (String item : list) {
-                report = runPMD(projectPath, report, item);
-                report.setDataClass(duplicatedCode(projectPath, item));
-            }
-                
-            codeSmells.append(report.getProject_name() + "," + report.getBuildID() + "," +  report.getBuild_State() + "," + report.getDuplicatedCode() + ","+ report.getGodClass()+
-            ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() +","+ report.getDataClass()+ ","+ report.getFileNumber() + '\n');
-            System.out.println(" **** File Number : "+report.getFileNumber()+" ****");
-        } catch (Exception e) {
-            
-        }
-            
-        
+        // built commit
+        String code_version = projectPath + "/versions_builds/" + build.getBuildId();
 
-      
+        new File(projectPath + "/versions_builds/").mkdir();
+        new File(code_version).mkdir();
+        /*
+         * Here we are analyzing a commit. 
+         * for that we use git worktree to extract the version of the code at the time of commit in order to analyze it.
+         */
+        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c",
+                "cd " + projectPath + " ; " + "git worktree add " + code_version + " " + commit);
+
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line2;
+        while ((line2 = r.readLine()) != null) {
+            if (line2.contains("fatal")) {
+                System.out.println(project+": "+ Arrays.toString(builder.command().toArray()));
+                System.out.println(" ********** ERROR IN COMMIT " + commit + ":\n" + line2);
+            }
+        }
+        ArrayList<String> list = new ArrayList<>();
+        if (new File(code_version).exists()) {
+            list = getFilesChanged( commit, code_version);
+
+            try {
+                Report report = new Report(build.getProject_name(), build.getBuildId(), build.getBuild_State());
+                report.setFileNumber(list.size());
+                for (String item : list) {
+                    report = runPMD(code_version, report, item);
+                    report.setDuplicatedCode(duplicatedCode(code_version, item));
+                }
+                    
+                codeSmells.append(report.getProject_name() + "," + report.getBuildID() + "," +  report.getBuild_State() + "," + report.getDuplicatedCode() + ","+ report.getGodClass()+
+                ","+report.getGodMethod()+"," +  report.getCyclomaticComplexity() +","+ report.getDataClass()+ ","+ report.getFileNumber() + '\n');
+                System.out.println(" **** Number of file to analyse : "+report.getFileNumber()+" ****");
+                
+                // delete the version
+                FileUtils.deleteDirectory(new File(code_version));
+            } catch (Exception e) {}
+
+        } else
+            System.out.println("VERSION PROBLEM" + Arrays.toString(builder.command().toArray()));
     }
 
 
