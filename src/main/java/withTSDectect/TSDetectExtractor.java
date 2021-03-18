@@ -15,7 +15,7 @@ import environments.Environment;
 import utilities.Build;
 import utilities.Utility;
 
-public class TSDetectExtractor extends Thread{
+public class TSDetectExtractor extends Thread {
     
 
     
@@ -38,11 +38,11 @@ public class TSDetectExtractor extends Thread{
         ArrayList<TSDInput> list =new ArrayList<>();
         try {
             System.out.println("**********   "+project+"   **********");
-            
+            int i =1;
             System.out.println(LocalTime.now());
             Utility.cloneProject( project, env.getRepositoryPath());//clone GIT
             for (Build build : project_builds) {
-                int i =1;
+                
                 System.out.println(i++ +": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 list = extractTS(build);
                 if(!list.equals(null)) {
@@ -59,14 +59,21 @@ public class TSDetectExtractor extends Thread{
             int aleatoire = ThreadLocalRandom.current().nextInt();
             Utility.writeInCSV(codeSmells,project.replace("/", "-")+"_TSDinput"+aleatoire+".csv");
             System.out.println("*******Number of to analyse : "+pathList.size()+"  *********");
-            runTSD("'"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'");// run tsDetect
+            
+            runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'");// run tsDetect
 
             System.out.println(LocalTime.now());
+        
+            // delete the project directory
+            //try {
+            //    FileUtils.deleteDirectory(new File(env.getRepositoryPath()));
+            //} catch (final IOException e) {
+            //    System.err.println("Please delete the directory " + env.getRepositoryPath() + project + " manually");
+            //}
+        
         } catch (Exception e) {
             e.printStackTrace();
         }
-            
-       
     }
 
     private ArrayList<TSDInput> extractTS(Build build )throws IOException {
@@ -83,7 +90,7 @@ public class TSDetectExtractor extends Thread{
          * Here we are analyzing a commit. 
          * for that we use git worktree to extract the version of the code at the time of commit in order to analyze it.
          */
-        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c",
+        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(),env.argument(),
                 "cd " + projectPath + " ; " + "git worktree add " + code_version + " " + commit);
 
         builder.redirectErrorStream(true);
@@ -102,10 +109,7 @@ public class TSDetectExtractor extends Thread{
             System.out.println("VERSION PROBLEM" + Arrays.toString(builder.command().toArray()));
 
         // delete the version
-        try {
-            FileUtils.deleteDirectory(new File(code_version));
-        } catch (final IOException e) {
-        }
+        
         return new ArrayList<>();
     }
 
@@ -131,7 +135,13 @@ public class TSDetectExtractor extends Thread{
             if (line.contains("fatal")) {
                 System.out.println(project+": "+ Arrays.toString(builder.command().toArray()));
                 System.out.println(" ********** ERROR IN COMMIT " + commit + ":\n" + line);
-                return new ArrayList<>();
+                break;
+            }
+        }
+        if(list.size() == 0){
+            try {
+                FileUtils.deleteDirectory(new File(projectPath));
+            } catch (final IOException e) {
             }
         }
         return list;
@@ -139,7 +149,7 @@ public class TSDetectExtractor extends Thread{
 
 
     private void runTSD(String file) throws IOException{
-        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(), "java -jar .\\TestSmellDetector.jar "+file);
+        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(), env.executeTSD()+file);
         builder.redirectErrorStream(true);
         builder.start();
     }

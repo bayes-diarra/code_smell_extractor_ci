@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import environments.Environment;
+import environments.Linux;
 import environments.Windows;
 import utilities.Build;
 import utilities.Utility;
@@ -13,10 +14,10 @@ public class TSDMain {
     
     public static void main(String[] args) throws IOException {
     
-        String data = "singularity.csv"; //jackrabbit-oak
+        String data = "data.csv"; //jackrabbit-oak
         HashMap<String, List<Build>> hashmap_build=null;
-        Environment env = new Windows("C:/tmpGitRepository/"); 
-        
+        //Environment env = new Windows("C:/tmpGitRepository/"); 
+        Environment env = new Linux( "/home/bayesdiarra/tmpGitRepositorytsd/");
         /*ArrayList<String> projects_list= new ArrayList<>();
         projects_list.add("CloudifySource/cloudify");projects_list.add("Graylog2/graylog2-server");projects_list.add("HubSpot/Singularity");
         projects_list.add("SonarSource/sonarqube");projects_list.add("apache/jackrabbit-oak");projects_list.add("gradle/gradle");

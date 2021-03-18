@@ -30,5 +30,11 @@ public class Linux extends Environment {
         return "-c";
     }
 
+    @Override
+    public String executeTSD() {
+        
+        return "java -jar ./TestSmellDetector.jar ";
+    }
+
 
 } 

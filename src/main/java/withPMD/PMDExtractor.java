@@ -33,11 +33,11 @@ public class PMDExtractor extends Thread{
     public void run() {
         try {
             System.out.println("**********   "+project+"   **********");
-            
+            int i =1;
             System.out.println(LocalTime.now());
             Utility.cloneProject( project, env.getRepositoryPath());//clone GIT
             for (Build build : project_builds) {
-                int i =1;
+            
                 System.out.println(i++ +": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 extractCS(build);
             }
@@ -73,7 +73,7 @@ public class PMDExtractor extends Thread{
          * Here we are analyzing a commit. 
          * for that we use git worktree to extract the version of the code at the time of commit in order to analyze it.
          */
-        ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c",
+        ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(),
                 "cd " + projectPath + " ; " + "git worktree add " + code_version + " " + commit);
 
         builder.redirectErrorStream(true);
@@ -132,7 +132,7 @@ public class PMDExtractor extends Thread{
             if (line.contains("fatal")) {
                 System.out.println(project+": "+ Arrays.toString(builder.command().toArray()));
                 System.out.println(project+" ********** ERROR IN COMMIT " + commit + ":\n" + line);
-                return null;
+                break;
             }
         }
         return list;

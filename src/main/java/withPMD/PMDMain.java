@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import environments.Environment;
+import environments.Linux;
 import environments.Windows;
 
 public class PMDMain {
 
     public static void main(String[] args) throws IOException {
         
-        String data = "singularity.csv"; //jackrabbit-oak
+        String data = "data.csv"; //jackrabbit-oak
         HashMap<String, List<Build>> hashmap_build=null;
         Environment env = null;
         /*ArrayList<String> projects_list= new ArrayList<>();
@@ -23,7 +24,8 @@ public class PMDMain {
         
         try {
 
-            env = new Windows("C:/pmd/bin", "C:/tmpGitRepository/");  
+            //env = new Windows("C:/pmd/bin", "C:/tmpGitRepository/");  
+            env = new Linux("/home/bayesdiarra/pmd/bin", "/home/bayesdiarra/tmpGitRepositorypmd/");
              
             hashmap_build = Utility.getBuilds(data);
             for (String proj : hashmap_build.keySet()) {

@@ -29,5 +29,11 @@ public class Windows  extends Environment {
     public String argument() {
         return "/c";
     }
+
+    @Override
+    public String executeTSD() {
+        
+        return "java -jar .\\TestSmellDetector.jar ";
+    }
 }
 
