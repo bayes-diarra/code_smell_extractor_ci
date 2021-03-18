@@ -37,7 +37,8 @@ public class PMDExtractor extends Thread{
             System.out.println(LocalTime.now());
             Utility.cloneProject( project, env.getRepositoryPath());//clone GIT
             for (Build build : project_builds) {
-                System.out.println(Report.getNumber()+": "+project+" ********** BUILD (" + build.getBuildId() + ")");
+                int i =1;
+                System.out.println(i++ +": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 extractCS(build);
             }
             

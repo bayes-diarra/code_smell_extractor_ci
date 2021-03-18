@@ -5,7 +5,7 @@ public class Report {
     private String buildID;
     private int build_state;
     private int duplicatedCode,godClass,godMethod,cyclomaticComplexity,dataClass,fileNumber;
-    private  static int NUMBER=1;
+    
 
     public Report(String project_name, String buildID, int build_state) {
         this.project_name = project_name;
@@ -17,7 +17,6 @@ public class Report {
         this.cyclomaticComplexity = 0;
         this.dataClass = 0;
         this.fileNumber =0;
-        Report.NUMBER++;
     }
 
     public String getProject_name() {
@@ -26,11 +25,6 @@ public class Report {
 
     public void setProject_name(String project_name) {
         this.project_name = project_name;
-    }
-
-
-    public static int getNumber(){
-        return NUMBER;
     }
 
     public String getBuildID() {

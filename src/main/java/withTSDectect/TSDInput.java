@@ -4,19 +4,14 @@ public class TSDInput {
     
 
     private String projectName, testFilePath, ProdFilePath;
-    public  static int NUMBER=1;
 
     public TSDInput (String projectName, String testFilePath, String ProdFilePath){
 
         this.projectName = projectName;
         this.testFilePath =testFilePath;
         this.projectName = ProdFilePath;
-        TSDInput.NUMBER++;
     }
 
-    public static int getNumber(){
-        return NUMBER;
-    }
     public TSDInput (String projectName, String testFilePath){
 
         this.projectName = projectName;
