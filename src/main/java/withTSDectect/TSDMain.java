@@ -13,7 +13,7 @@ public class TSDMain {
     
     public static void main(String[] args) throws IOException {
     
-        String data = "data.csv"; //jackrabbit-oak
+        String data = "singularity.csv"; //jackrabbit-oak
         HashMap<String, List<Build>> hashmap_build=null;
         Environment env = new Windows("C:/tmpGitRepository/"); 
         
@@ -24,7 +24,7 @@ public class TSDMain {
         // start the Code Smells detection using PMD
         
         try {
-            
+
             hashmap_build = Utility.getBuilds(data);
             for (String proj : hashmap_build.keySet()) {
                 TSDetectExtractor tsdetect = new TSDetectExtractor(proj, hashmap_build.get(proj), env);

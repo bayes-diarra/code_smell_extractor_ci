@@ -42,7 +42,8 @@ public class TSDetectExtractor extends Thread{
             System.out.println(LocalTime.now());
             Utility.cloneProject( project, env.getRepositoryPath());//clone GIT
             for (Build build : project_builds) {
-                System.out.println(project+" ********** BUILD (" + build.getBuildId() + ")");
+                int i =1;
+                System.out.println(i++ +": "+project+" ********** BUILD (" + build.getBuildId() + ")");
                 list = extractTS(build);
                 if(!list.equals(null)) {
                     pathList.addAll(list);
@@ -64,12 +65,7 @@ public class TSDetectExtractor extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-            // delete the project directory
-            try {
-                FileUtils.deleteDirectory(new File(env.getRepositoryPath()));
-            } catch ( IOException e) {
-                System.err.println("Please delete the directory " + env.getRepositoryPath() + project + " manually");
-            }
+            
        
     }
 
