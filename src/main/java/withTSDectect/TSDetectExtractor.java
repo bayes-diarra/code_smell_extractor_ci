@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,6 +24,7 @@ public class TSDetectExtractor extends Thread {
     private List<Build> project_builds;
     private Environment env;
     private StringBuilder codeSmells = new StringBuilder("");
+    private StringBuilder tsdOutput = new StringBuilder("");
     
     private ArrayList<TSDInput> pathList = new ArrayList<>();
 
@@ -56,11 +58,13 @@ public class TSDetectExtractor extends Thread {
                     System.out.println(item.toString());
                 }
             }
-            int aleatoire = ThreadLocalRandom.current().nextInt();
+            String aleatoire = String.valueOf(Calendar.getInstance().getTimeInMillis());
             Utility.writeInCSV(codeSmells,project.replace("/", "-")+"_TSDinput"+aleatoire+".csv");
             System.out.println("*******Number of to analyse : "+pathList.size()+"  *********");
             
-            runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'");// run tsDetect
+            tsdOutput =runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'") ;// run tsDetect
+            Utility.writeInCSV(tsdOutput,project.replace("/", "-")+"_TSDoutput"+aleatoire+".csv");
+
 
             System.out.println(LocalTime.now());
         
@@ -148,10 +152,25 @@ public class TSDetectExtractor extends Thread {
     }
 
 
-    private void runTSD(String file) throws IOException{
+    private StringBuilder runTSD(String file) throws IOException{
         ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(), env.executeTSD()+file);
         builder.redirectErrorStream(true);
-        builder.start();
+        Process p = builder.start();
+        StringBuilder output = new StringBuilder("");
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                break;
+            }
+            if(line.trim().equals("end") || line.trim().equals("TemporaryFolder") || line.contains("files not found") || line.trim().equals("ObjectMapperProvider")){
+                continue;
+            }else
+                output.append(line+"\n");
+            }
+
+        return output;
     }
 
 }

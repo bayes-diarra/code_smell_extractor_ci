@@ -13,8 +13,8 @@ import java.io.InputStreamReader;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class PMDExtractor extends Thread{
 
@@ -42,7 +42,7 @@ public class PMDExtractor extends Thread{
                 extractCS(build);
             }
             
-            int aleatoire = ThreadLocalRandom.current().nextInt();
+            String aleatoire = String.valueOf(Calendar.getInstance().getTimeInMillis());
 
             Utility.writeInCSV(codeSmells, project.replace("/", "-")+"_PMDoutputData"+aleatoire+".csv");
             

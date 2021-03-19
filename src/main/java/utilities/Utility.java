@@ -72,6 +72,7 @@ public class Utility {
     public static List<String> readCSVData(String pathToData) throws IOException {
         List<String> res = new ArrayList<String>();
         String line = "";
+        if(!pathToData.isEmpty()){}
         BufferedReader br = new BufferedReader(new FileReader(pathToData));
         br.readLine();// header
         while ((line = br.readLine()) != null) {

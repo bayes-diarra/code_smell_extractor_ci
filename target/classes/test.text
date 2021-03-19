@@ -1,1 +1,0 @@
-java -jar ./extractor.jar -l -tsd data.csv

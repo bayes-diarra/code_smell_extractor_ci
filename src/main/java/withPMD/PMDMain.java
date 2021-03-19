@@ -25,7 +25,7 @@ public class PMDMain {
         try {
 
             //env = new Windows("C:/pmd/bin", "C:/tmpGitRepository/");  
-            env = new Linux("/home/bayesdiarra/pmd/bin", "/home/bayesdiarra/tmpGitRepositorypmd/");
+            env = new Linux("$HOME/pmd/bin", "tmpGitRepositorypmd/");
              
             hashmap_build = Utility.getBuilds(data);
             for (String proj : hashmap_build.keySet()) {
