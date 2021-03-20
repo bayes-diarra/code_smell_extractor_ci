@@ -33,7 +33,7 @@ public class Linux extends Environment {
     @Override
     public String executeTSD() {
         
-        return "java -jar ./TestSmellDetector.jar ";
+        return "java -jar ./TestSmellDetector-ci.jar ";
     }
 
 

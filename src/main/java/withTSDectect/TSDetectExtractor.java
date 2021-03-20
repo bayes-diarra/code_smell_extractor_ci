@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.io.FileUtils;
 import environments.Environment;
@@ -55,14 +54,13 @@ public class TSDetectExtractor extends Thread {
             for (TSDInput item : pathList) {
                 if(!item.getProjectName().equals(null)){
                     codeSmells.append(item.toString());
-                    System.out.println(item.toString());
                 }
             }
             String aleatoire = String.valueOf(Calendar.getInstance().getTimeInMillis());
             Utility.writeInCSV(codeSmells,project.replace("/", "-")+"_TSDinput"+aleatoire+".csv");
             System.out.println("*******Number of to analyse : "+pathList.size()+"  *********");
             
-            tsdOutput =runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'") ;// run tsDetect
+            runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'") ;// run tsDetect
             Utility.writeInCSV(tsdOutput,project.replace("/", "-")+"_TSDoutput"+aleatoire+".csv");
 
 
@@ -152,11 +150,10 @@ public class TSDetectExtractor extends Thread {
     }
 
 
-    private StringBuilder runTSD(String file) throws IOException{
+    private void runTSD(String file) throws IOException{
         ProcessBuilder builder = new ProcessBuilder(env.processBuilderApp(), env.argument(), env.executeTSD()+file);
         builder.redirectErrorStream(true);
         Process p = builder.start();
-        StringBuilder output = new StringBuilder("");
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
         while (true) {
@@ -164,13 +161,7 @@ public class TSDetectExtractor extends Thread {
             if (line == null) {
                 break;
             }
-            if(line.trim().equals("end") || line.trim().equals("TemporaryFolder") || line.contains("files not found") || line.trim().equals("ObjectMapperProvider")){
-                continue;
-            }else
-                output.append(line+"\n");
-            }
-
-        return output;
+            System.out.print(line);
+        }
     }
-
 }

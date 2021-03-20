@@ -9,7 +9,7 @@ Once pmd is downloaded, follow the instructions to install it:
     Install pmd in `$HOME/` and rename the parent folder just to pmd
     - On the windows:
     install pmd in `C:\` and rename the parent folder just to pmd
-## No need install
+## No need to install
 - tsDetect : tsDetect is implemented as an open-source, command line-based tool that is available as a standalone Java jar file.(https://testsmells.org/pages/testsmelldetector-architecture.html) 
 ## Code smells that are analysing
 There are more than five(5), you can modify the code to add some. 
@@ -43,5 +43,6 @@ There are more than five(5), you can modify the code to add some.
 - Windows : `java -jar .\extractor.jar -w -pmd|-tsd your_data_file_path`
 - Linux : `java -jar ./extractor.jar -l -pmd|-tsd your_data_file_path`
 - `-pmd` : to run PMD analysis
-- `-tsd` : to run tsDetect analysis
+- `-tsd` : to run tsDetector analysis
+  - Note : If you run tsdetector the `extractor-ci.jar` and `TestSmellDetector-ci.jar` file shoud be in the same directory
 ## Enjoy it!
