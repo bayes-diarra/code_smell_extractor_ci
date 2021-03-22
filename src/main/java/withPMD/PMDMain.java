@@ -23,10 +23,11 @@ public class PMDMain {
         // start the Code Smells detection using PMD
         
         try {
-
+            
             //env = new Windows("C:/pmd/bin", "C:/tmpGitRepository/");  
-            env = new Linux("$HOME/pmd/bin", "tmpGitRepositorypmd/");
-             
+            String s = Linux.getUserHome();
+            env = new Linux("$HOME/pmd/bin", s+"/tmpGitRepositorypmd/");
+            
             hashmap_build = Utility.getBuilds(data);
             for (String proj : hashmap_build.keySet()) {
                 PMDExtractor pmd = new PMDExtractor(proj, hashmap_build.get(proj), env);

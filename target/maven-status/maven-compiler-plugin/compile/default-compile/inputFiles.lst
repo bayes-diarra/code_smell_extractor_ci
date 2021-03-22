@@ -1,12 +1,13 @@
+/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/Test.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/environments/Environment.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/environments/Linux.java
+/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withPMD/Report.java
+/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/utilities/Build.java
+/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/Main.java
+/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withPMD/PMDMain.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/utilities/Utility.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withTSDectect/TSDMain.java
-/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withPMD/Report.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withTSDectect/TSDetectExtractor.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withPMD/PMDExtractor.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withTSDectect/TSDInput.java
 /home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/environments/Windows.java
-/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/utilities/Build.java
-/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/Main.java
-/home/bayesdiarra/IdeaProjects/code_smell_extractor_ci/src/main/java/withPMD/PMDMain.java

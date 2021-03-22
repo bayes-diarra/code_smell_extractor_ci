@@ -23,7 +23,6 @@ public class TSDetectExtractor extends Thread {
     private List<Build> project_builds;
     private Environment env;
     private StringBuilder codeSmells = new StringBuilder("");
-    private StringBuilder tsdOutput = new StringBuilder("");
     
     private ArrayList<TSDInput> pathList = new ArrayList<>();
 
@@ -61,7 +60,7 @@ public class TSDetectExtractor extends Thread {
             System.out.println("*******Number of to analyse : "+pathList.size()+"  *********");
             
             runTSD(" '"+project.replace("/", "-")+"_TSDinput"+aleatoire+".csv'") ;// run tsDetect
-            Utility.writeInCSV(tsdOutput,project.replace("/", "-")+"_TSDoutput"+aleatoire+".csv");
+            
 
 
             System.out.println(LocalTime.now());
@@ -98,11 +97,11 @@ public class TSDetectExtractor extends Thread {
         builder.redirectErrorStream(true);
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line2;
-        while ((line2 = r.readLine()) != null) {
-            if (line2.contains("fatal")) {
+        String line;
+        while ((line = r.readLine()) != null) {
+            if (line.contains("fatal")) {
                 System.out.println(project+": "+ Arrays.toString(builder.command().toArray()));
-                System.out.println(" ********** ERROR IN COMMIT " + commit + ":\n" + line2);
+                System.out.println(" ********** ERROR IN COMMIT " + commit + ":\n" + line);
             }
         }
         if (new File(code_version).exists()) {
@@ -161,7 +160,7 @@ public class TSDetectExtractor extends Thread {
             if (line == null) {
                 break;
             }
-            System.out.print(line);
+            System.out.println(line);
         }
     }
 }

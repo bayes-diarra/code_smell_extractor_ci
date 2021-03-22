@@ -32,9 +32,9 @@ public class Main {
                         hashmap_build = Utility.getBuilds(inputfile);
                         //linux
                         if(system.equals("-l")) {
-                           
+                           String s = Linux.getUserHome();
                             if(analysisType.equalsIgnoreCase("-pmd")) {
-                                env = new Linux("$HOME/pmd/bin", "tmpGitRepositorypmd/" );
+                                env = new Linux("$HOME/pmd/bin", s+"/tmpGitRepositorypmd/" );
                                 for (String proj : hashmap_build.keySet()) {
                                     PMDExtractor pmd = new PMDExtractor(proj, hashmap_build.get(proj), env);
                                     pmd.start();
@@ -42,7 +42,7 @@ public class Main {
                             }
 
                             if(analysisType.equalsIgnoreCase("-tsd")) {
-                                env = new Linux("tmpGitRepositorytsd/" );
+                                env = new Linux(s+"/tmpGitRepositorytsd/" );
                                 for (String proj : hashmap_build.keySet()) {
                                     TSDetectExtractor tsd = new TSDetectExtractor(proj, hashmap_build.get(proj), env);
                                     tsd.start();

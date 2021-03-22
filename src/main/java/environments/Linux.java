@@ -1,5 +1,9 @@
 package environments;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Linux extends Environment {
 
     public Linux(String pmdPath, String repositoryPath) {
@@ -34,6 +38,16 @@ public class Linux extends Environment {
     public String executeTSD() {
         
         return "java -jar ./TestSmellDetector-ci.jar ";
+    }
+
+    public static String getUserHome() throws IOException{
+
+        ProcessBuilder builder = new ProcessBuilder("bash","-c","eval echo ~$USER");
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line = r.readLine();
+        return line;
     }
 
 

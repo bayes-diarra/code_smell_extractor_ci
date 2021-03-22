@@ -17,7 +17,8 @@ public class TSDMain {
         String data = "data.csv"; //jackrabbit-oak
         HashMap<String, List<Build>> hashmap_build=null;
         //Environment env = new Windows("C:/tmpGitRepository/"); 
-        Environment env = new Linux( "/home/bayesdiarra/tmpGitRepositorytsd/");
+        String s = Linux.getUserHome();
+        Environment env = new Linux( s+"/tmpGitRepositorytsd/");
         /*ArrayList<String> projects_list= new ArrayList<>();
         projects_list.add("CloudifySource/cloudify");projects_list.add("Graylog2/graylog2-server");projects_list.add("HubSpot/Singularity");
         projects_list.add("SonarSource/sonarqube");projects_list.add("apache/jackrabbit-oak");projects_list.add("gradle/gradle");
