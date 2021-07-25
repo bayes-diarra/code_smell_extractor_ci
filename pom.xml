@@ -10,16 +10,11 @@
     <packaging>jar</packaging>
     
          
-    <!--
-         <properties>
-                  <sonar.projectKey>bayes-diarra_code_smell_extractor_ci</sonar.projectKey>
-                  <sonar.organization>bayes-diarra</sonar.organization>
-                  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-         </properties> 
-    -->
-         <properties>
-                  <sonar.projectKey>code_smell_extractor_ci</sonar.projectKey>
-         </properties>
+    <properties>
+  <sonar.projectKey>bayes-diarra_code_smell_extractor_ci</sonar.projectKey>
+  <sonar.organization>bayes-diarra</sonar.organization>
+  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+</properties>
     <build>
         <plugins>
             <plugin>
